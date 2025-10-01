@@ -22,3 +22,8 @@ reports/*.html
 
 # Keep sample guidelines
 !data/tagging_guidelines.md
+
+# Secrets and local configs
+.env
+config/*local*.yml
+config/.env

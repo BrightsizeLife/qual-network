@@ -23,8 +23,10 @@ A reproducible pipeline that ingests qual, forums, and social data (time + locat
 
 ### 1. Data Ingestion
 - ✅ CSV contract set
+- ✅ **social_pull v0** (HN + Reddit) with normalized `entity | source | meta_data | text` schema
 - ⬜ Harmonize real inputs (qual transcripts, forums, social) with `{entity, time, location, source, dim_*}`
 - ⬜ Add provenance fields (instrument version, annotator IDs)
+- ⬜ X/LinkedIn connectors (gated by API keys)
 
 ### 2. Tagging & Quality Loop
 - ✅ IRR metrics (α, κ, AC1)
@@ -63,6 +65,7 @@ A reproducible pipeline that ingests qual, forums, and social data (time + locat
 - **BN edges** are associative under discretization; do not claim causality without design/assumptions
 - **Time synthesized** when missing → clearly labeled and excluded from causal claims
 - **Privacy**: ensure PII is removed or hashed; document retention windows
+- **Social data ingestion**: use official APIs only; respect robots.txt and ToS; store only public content; consider PII in text fields
 
 ---
 
@@ -79,7 +82,16 @@ A reproducible pipeline that ingests qual, forums, and social data (time + locat
 
 1. Put data in `data/` (wide CSV) and optional `tagged_long.csv`
 2. Run `make pipeline` to regenerate models, plots, and reports (timestamped)
-3. Review `README_SCOPE.md` + `reports/*.html` weekly; prioritize the TODOs it surfaces
+3. *Optional*: Run `make social_pull` to fetch public posts from HN/Reddit (see `docs/CONNECTORS.md` for auth setup)
+4. Review `README_SCOPE.md` + `reports/*.html` weekly; prioritize the TODOs it surfaces
+
+### Social Pull Data Contract
+
+`data/social_pull_YYYYmmdd_HHMMSS_web_crawl.csv` schema:
+- **entity**: Stable post ID (string)
+- **source**: `hackernews`, `reddit`, `twitter`, `linkedin`
+- **meta_data**: JSON string with `{url, author, created_utc, score, num_comments, reactions, origin}`
+- **text**: Post title + " — " + body (raw, no truncation)
 
 ---
 

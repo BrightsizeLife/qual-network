@@ -1,0 +1,29 @@
+# Social data source configuration
+# Edit enabled: false to disable connectors
+# Set environment variables for connectors requiring authentication
+
+hackernews:
+  enabled: true
+  endpoints:
+    top: true      # Pull from top stories
+    new: false     # Pull from new stories
+  max_posts: 200
+
+reddit:
+  enabled: true
+  subreddits:
+    - programming
+    - webdev
+    - productmanagement
+  max_posts: 200
+  auth: env  # Requires: REDDIT_CLIENT_ID, REDDIT_SECRET, REDDIT_USER_AGENT
+
+twitter:
+  enabled: false
+  note: "Requires X API v2 bearer token in env: X_BEARER"
+  # To enable: set enabled: true and export X_BEARER="your-token"
+
+linkedin:
+  enabled: false
+  note: "Use official partner/API or manual export; no scraping allowed"
+  # To enable: implement official LinkedIn API integration

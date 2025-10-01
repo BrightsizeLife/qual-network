@@ -1,7 +1,7 @@
 # qual-network pipeline
 RSCRIPT=Rscript
 
-.PHONY: all pipeline data irr pca bn statespace reports clean
+.PHONY: all pipeline data irr pca bn statespace reports social_pull clean
 
 # Full automated pipeline
 pipeline: data irr pca bn statespace reports
@@ -32,6 +32,10 @@ statespace:
 # Generate HTML reports
 reports:
 	$(RSCRIPT) R/08_render_reports.R
+
+# Social data pull (opt-in, not part of default pipeline)
+social_pull:
+	$(RSCRIPT) R/10_social_pull.R
 
 # Clean all generated outputs
 clean:
