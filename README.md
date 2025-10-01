@@ -18,13 +18,13 @@ Required packages: `tidyverse`, `mvtnorm`, `bnlearn`, `igraph`, `ggraph`, `psych
 
 ### 2. Generate synthetic data (or use your own)
 ```bash
-Rscript R/01_simulate_data_full.R
+Rscript R/01_generate_data.R
 ```
 
 Creates:
-- `data/synthetic_qual_net_*.csv` (wide: entity, time, location, source, dim_1..dim_100)
-- `data/tagged_long.csv` (IRR: entity, rater_type, dimension, code)
-- `data/tagging_guidelines.md`
+- `data/synthetic_qual_net_*.csv` — Wide format with entity, time, location, source, dim_1..dim_100
+- `data/tagged_long.csv` — IRR tagging data (entity, rater_type, dimension, code)
+- `data/tagging_guidelines.md` — Coding instructions
 
 ### 3. Run full pipeline
 ```bash
@@ -33,11 +33,12 @@ make pipeline
 
 Or run steps individually:
 ```bash
-Rscript R/02_irr_analysis.R          # IRR metrics
-Rscript R/04_pca_auto_k.R            # PCA with auto-k
-Rscript R/05_bayesian_networks.R     # BN structure learning
-Rscript R/06_state_space.R           # Kalman filtering
-Rscript R/09_render_reports.R        # HTML reports
+Rscript R/01_generate_data.R         # Generate synthetic data
+Rscript R/02_irr.R                   # IRR metrics
+Rscript R/03_pca.R                   # PCA with auto-k
+Rscript R/04_bayesian_networks.R     # BN structure learning
+Rscript R/05_state_space.R           # Kalman filtering
+Rscript R/08_render_reports.R        # HTML reports
 ```
 
 ## Data Contracts

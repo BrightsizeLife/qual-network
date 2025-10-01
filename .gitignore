@@ -1,11 +1,24 @@
+# R environment
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-.DS_Store
-renv/
 .Rprofile
 .Rproj
 .Rbuildignore
-*.png
-*.rds
+renv/
+
+# System
+.DS_Store
+
+# Generated outputs (keep in local runs, exclude from git)
+data/*.csv
+data/tagged_long.csv
+models/*.rds
+models/*.json
+models/*.csv
+plots/*.png
+reports/*.html
+
+# Keep sample guidelines
+!data/tagging_guidelines.md
