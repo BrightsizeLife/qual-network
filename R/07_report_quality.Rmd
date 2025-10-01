@@ -1,0 +1,73 @@
+---
+title: "Dimensions Quality Report"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(jsonlite)
+library(knitr)
+```
+
+## Data Snapshot
+
+```{r}
+# Load latest data
+csvs <- list.files("../data", pattern="\\.csv$", full.names=TRUE)
+csv <- csvs[which.max(file.mtime(csvs))]
+df <- readr::read_csv(csv, show_col_types=FALSE)
+n_obs <- nrow(df)
+n_dims <- sum(grepl("^dim_", colnames(df)))
+```
+
+- **Data file**: `r basename(csv)`
+- **N observations**: `r n_obs`
+- **N dimensions**: `r n_dims`
+
+## Tagging Guidelines
+
+```{r}
+guidelines_path <- "../data/tagging_guidelines.md"
+if (file.exists(guidelines_path)) {
+  cat(readLines(guidelines_path), sep="\n")
+} else {
+  cat("*(No tagging guidelines provided)*\n")
+}
+```
+
+## Inter-Rater Reliability (IRR)
+
+```{r}
+# Check for IRR data
+irr_files <- list.files("../models", pattern="^irr_summary_.*\\.json$", full.names=TRUE)
+if (length(irr_files) == 0) {
+  cat("**WARNING**: No IRR data (data/tagged_long.csv) found. Skipping IRR analysis.\n")
+} else {
+  irr_json <- fromJSON(irr_files[which.max(file.mtime(irr_files))])
+  kable(irr_json, caption="IRR Metrics by Dimension")
+
+  # Flag low-quality dimensions
+  if ("krippendorff_alpha" %in% colnames(irr_json)) {
+    low_dims <- irr_json %>% filter(krippendorff_alpha < 0.50) %>% pull(dimension)
+    if (length(low_dims) > 0) {
+      cat("\n**Dimensions needing specification refinement** (α < 0.50):\n")
+      cat(paste("-", low_dims, collapse="\n"), "\n")
+    }
+  }
+}
+```
+
+## IRR: Krippendorff's Alpha by Dimension
+
+```{r, fig.width=8, fig.height=6}
+irr_plot_files <- list.files("../plots", pattern="^irr_kripp_alpha_.*\\.png$", full.names=TRUE)
+if (length(irr_plot_files) > 0) {
+  knitr::include_graphics(irr_plot_files[which.max(file.mtime(irr_plot_files))])
+} else {
+  cat("*(IRR plot not available)*\n")
+}
+```
+
+---
+*Report generated: `r Sys.time()`*

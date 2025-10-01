@@ -1,0 +1,62 @@
+[
+  {
+    "dimension": "dim_44",
+    "fleiss_kappa": 0.4162
+  },
+  {
+    "dimension": "dim_40",
+    "fleiss_kappa": 0.5719
+  },
+  {
+    "dimension": "dim_68",
+    "fleiss_kappa": 0.519
+  },
+  {
+    "dimension": "dim_21",
+    "fleiss_kappa": 0.4827
+  },
+  {
+    "dimension": "dim_66",
+    "fleiss_kappa": 0.557
+  },
+  {
+    "dimension": "dim_5",
+    "fleiss_kappa": 0.5687
+  },
+  {
+    "dimension": "dim_90",
+    "fleiss_kappa": 0.5383
+  },
+  {
+    "dimension": "dim_56",
+    "fleiss_kappa": 0.5755
+  },
+  {
+    "dimension": "dim_88",
+    "fleiss_kappa": 0.5502
+  },
+  {
+    "dimension": "dim_77",
+    "fleiss_kappa": 0.5991
+  },
+  {
+    "dimension": "dim_7",
+    "fleiss_kappa": 0.5739
+  },
+  {
+    "dimension": "dim_39",
+    "fleiss_kappa": 0.4473
+  },
+  {
+    "dimension": "dim_2",
+    "fleiss_kappa": 0.5555
+  },
+  {
+    "dimension": "dim_86",
+    "fleiss_kappa": 0.516
+  },
+  {
+    "dimension": "dim_71",
+    "fleiss_kappa": 0.5086
+  }
+]

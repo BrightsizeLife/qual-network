@@ -1,0 +1,123 @@
+---
+title: "Structure Models Report"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(jsonlite)
+library(knitr)
+```
+
+## PCA: Automated Component Selection
+
+```{r}
+# Load PCA selection
+pca_sel_files <- list.files("../models", pattern="^pca_selection_.*\\.json$", full.names=TRUE)
+if (length(pca_sel_files) > 0) {
+  pca_sel <- fromJSON(pca_sel_files[which.max(file.mtime(pca_sel_files))])
+  cat("**Selected k**:", pca_sel$selected_k, "\n\n")
+  cat("**Candidates**:\n")
+  cat("- Parallel Analysis:", pca_sel$candidates$parallel, "\n")
+  cat("- Elbow (2nd derivative):", pca_sel$candidates$elbow, "\n")
+  cat("- 5-fold CV:", pca_sel$candidates$cv, "\n\n")
+  cat("**Cumulative variance at k =", pca_sel$selected_k, "**:",
+      round(pca_sel$cumvar[pca_sel$selected_k], 3), "\n")
+} else {
+  cat("*(PCA selection not available)*\n")
+}
+```
+
+### Scree Plot
+
+```{r, fig.width=7, fig.height=5}
+scree_files <- list.files("../plots", pattern="^pca_scree_auto_.*\\.png$", full.names=TRUE)
+if (length(scree_files) > 0) {
+  knitr::include_graphics(scree_files[which.max(file.mtime(scree_files))])
+}
+```
+
+### PC Scores (PC1 vs PC2)
+
+```{r, fig.width=7, fig.height=5}
+scores_files <- list.files("../plots", pattern="^pca_scores_pc1_pc2_.*\\.png$", full.names=TRUE)
+if (length(scores_files) > 0) {
+  knitr::include_graphics(scores_files[which.max(file.mtime(scores_files))])
+}
+```
+
+### Top Loadings
+
+```{r}
+loadings_files <- list.files("../models", pattern="^pca_loadings_.*\\.csv$", full.names=TRUE)
+if (length(loadings_files) > 0) {
+  loadings <- readr::read_csv(loadings_files[which.max(file.mtime(loadings_files))], show_col_types=FALSE)
+  # Show top 10 by |PC1|
+  if ("PC1" %in% colnames(loadings)) {
+    top_load <- loadings %>% arrange(desc(abs(PC1))) %>% head(10)
+    kable(top_load, caption="Top 10 Loadings on PC1 (by absolute value)", digits=3)
+  }
+}
+```
+
+---
+
+## Bayesian Networks
+
+### Static DAG
+
+```{r, fig.width=10, fig.height=8}
+bn_static_files <- list.files("../plots", pattern="^bn_static_.*\\.png$", full.names=TRUE)
+if (length(bn_static_files) > 0) {
+  knitr::include_graphics(bn_static_files[which.max(file.mtime(bn_static_files))])
+}
+```
+
+### Time-Lagged DAG
+
+```{r, fig.width=10, fig.height=8}
+bn_time_files <- list.files("../plots", pattern="^bn_time_.*\\.png$", full.names=TRUE)
+if (length(bn_time_files) > 0) {
+  knitr::include_graphics(bn_time_files[which.max(file.mtime(bn_time_files))])
+} else {
+  cat("*(No time-lagged BN; 'time' column not present)*\n")
+}
+```
+
+### Top Conditional MI Triplets (Mediation/Moderation Probes)
+
+```{r}
+cmi_files <- list.files("../models", pattern="^bn_cmi_triplets_.*\\.json$", full.names=TRUE)
+if (length(cmi_files) > 0) {
+  cmi <- fromJSON(cmi_files[which.max(file.mtime(cmi_files))])
+  if (nrow(cmi) > 0) {
+    top20 <- cmi %>% head(20)
+    kable(top20, caption="Top 20 Triplets by Conditional MI", digits=4)
+  }
+}
+```
+
+**Note on limitations**: These are heuristic structure-learning results. Causal claims require domain knowledge, experimental design, and sensitivity analysis.
+
+---
+
+## State-Space Models (Kalman Filter)
+
+### PC1 Level Over Time
+
+```{r, fig.width=8, fig.height=5}
+ss_files <- list.files("../plots", pattern="^state_space_pc1_level_.*\\.png$", full.names=TRUE)
+if (length(ss_files) > 0) {
+  knitr::include_graphics(ss_files[which.max(file.mtime(ss_files))])
+}
+```
+
+**Interpretation notes**:
+
+- The smoothed level shows the estimated latent state of PC1 over time.
+- Positive slopes indicate upward trends; negative slopes indicate downward trends.
+- These are local linear trends; non-stationarity may be present.
+
+---
+*Report generated: `r Sys.time()`*
